@@ -7,10 +7,10 @@
  *
  * ## Security
  *
- * This module prevents path traversal, not allowing absolute paths or parent dir components
- * (i.e. "/usr/path/to/file" or "../path/to/file" paths are not allowed).
- * Paths accessed with this API must be relative to one of the {@link BaseDirectory | base directories}
- * so if you need access to arbitrary filesystem paths, you must write such logic on the core layer instead.
+ * This module prevents path traversal, not allowing parent directory accessors to be used
+ * (i.e. "/usr/path/to/../file" or "../path/to/file" paths are not allowed).
+ * Paths accessed with this API must be either relative to one of the {@link BaseDirectory | base directories}
+ * or created with the {@link https://v2.tauri.app/reference/javascript/api/namespacepath | path API}.
  *
  * The API has a scope configuration that forces you to restrict the paths that can be accessed using glob patterns.
  *
@@ -32,7 +32,7 @@
  * The available variables are:
  * {@linkcode https://v2.tauri.app/reference/javascript/api/namespacepath/#appconfigdir | $APPCONFIG},
  * {@linkcode https://v2.tauri.app/reference/javascript/api/namespacepath/#appdatadir | $APPDATA},
- * {@linkcode https://v2.tauri.app/reference/javascript/api/namespacepath/#appLocaldatadir | $APPLOCALDATA},
+ * {@linkcode https://v2.tauri.app/reference/javascript/api/namespacepath/#applocaldatadir | $APPLOCALDATA},
  * {@linkcode https://v2.tauri.app/reference/javascript/api/namespacepath/#appcachedir | $APPCACHE},
  * {@linkcode https://v2.tauri.app/reference/javascript/api/namespacepath/#applogdir | $APPLOG},
  * {@linkcode https://v2.tauri.app/reference/javascript/api/namespacepath/#audiodir | $AUDIO},
@@ -249,41 +249,41 @@ function parseFileInfo(r: UnparsedFileInfo): FileInfo {
  * @since 2.0.0
  */
 class FileHandle extends Resource {
-	/**
-	 * Reads up to `p.byteLength` bytes into `p`. It resolves to the number of
-	 * bytes read (`0` < `n` <= `p.byteLength`) and rejects if any error
-	 * encountered. Even if `read()` resolves to `n` < `p.byteLength`, it may
-	 * use all of `p` as scratch space during the call. If some data is
-	 * available but not `p.byteLength` bytes, `read()` conventionally resolves
-	 * to what is available instead of waiting for more.
-	 *
-	 * When `read()` encounters end-of-file condition, it resolves to EOF
-	 * (`null`).
-	 *
-	 * When `read()` encounters an error, it rejects with an error.
-	 *
-	 * Callers should always process the `n` > `0` bytes returned before
-	 * considering the EOF (`null`). Doing so correctly handles I/O errors that
-	 * happen after reading some bytes and also both of the allowed EOF
-	 * behaviors.
-	 *
-	 * @example
-	 * ```typescript
-	 * import { open, read, close, BaseDirectory } from "@tauri-apps/plugin-fs"
-	 * // if "$APP/foo/bar.txt" contains the text "hello world":
-	 * const file = await open("foo/bar.txt", { baseDir: BaseDirectory.App });
-	 * const buf = new Uint8Array(100);
-	 * const numberOfBytesRead = await file.read(buf); // 11 bytes
-	 * const text = new TextDecoder().decode(buf);  // "hello world"
-	 * await close(file.rid);
-	 * ```
-	 *
-	 * @since 2.0.0
-	 */
-	async read(buffer: Uint8Array): Promise<number | null> {
-		if (buffer.byteLength === 0) {
-			return 0;
-		}
+  /**
+   * Reads up to `p.byteLength` bytes into `p`. It resolves to the number of
+   * bytes read (`0` < `n` <= `p.byteLength`) and rejects if any error
+   * encountered. Even if `read()` resolves to `n` < `p.byteLength`, it may
+   * use all of `p` as scratch space during the call. If some data is
+   * available but not `p.byteLength` bytes, `read()` conventionally resolves
+   * to what is available instead of waiting for more.
+   *
+   * When `read()` encounters end-of-file condition, it resolves to EOF
+   * (`null`).
+   *
+   * When `read()` encounters an error, it rejects with an error.
+   *
+   * Callers should always process the `n` > `0` bytes returned before
+   * considering the EOF (`null`). Doing so correctly handles I/O errors that
+   * happen after reading some bytes and also both of the allowed EOF
+   * behaviors.
+   *
+   * @example
+   * ```typescript
+   * import { open, BaseDirectory } from "@tauri-apps/plugin-fs"
+   * // if "$APP/foo/bar.txt" contains the text "hello world":
+   * const file = await open("foo/bar.txt", { baseDir: BaseDirectory.AppConfig });
+   * const buf = new Uint8Array(100);
+   * const numberOfBytesRead = await file.read(buf); // 11 bytes
+   * const text = new TextDecoder().decode(buf);  // "hello world"
+   * await file.close();
+   * ```
+   *
+   * @since 2.0.0
+   */
+  async read(buffer: Uint8Array): Promise<number | null> {
+    if (buffer.byteLength === 0) {
+      return 0;
+    }
 
 		const [data, nread] = await invoke<[number[], number]>(
 			"plugin:fs|read",
@@ -298,121 +298,125 @@ class FileHandle extends Resource {
 		return nread === 0 ? null : nread;
 	}
 
-	/**
-	 * Seek sets the offset for the next `read()` or `write()` to offset,
-	 * interpreted according to `whence`: `Start` means relative to the
-	 * start of the file, `Current` means relative to the current offset,
-	 * and `End` means relative to the end. Seek resolves to the new offset
-	 * relative to the start of the file.
-	 *
-	 * Seeking to an offset before the start of the file is an error. Seeking to
-	 * any positive offset is legal, but the behavior of subsequent I/O
-	 * operations on the underlying object is implementation-dependent.
-	 * It returns the number of cursor position.
-	 *
-	 * @example
-	 * ```typescript
-	 * import { open, seek, write, SeekMode, BaseDirectory } from '@tauri-apps/plugin-fs';
-	 *
-	 * // Given hello.txt pointing to file with "Hello world", which is 11 bytes long:
-	 * const file = await open('hello.txt', { read: true, write: true, truncate: true, create: true, baseDir: BaseDirectory.App });
-	 * await file.write(new TextEncoder().encode("Hello world"), { baseDir: BaseDirectory.App });
-	 *
-	 * // Seek 6 bytes from the start of the file
-	 * console.log(await file.seek(6, SeekMode.Start)); // "6"
-	 * // Seek 2 more bytes from the current position
-	 * console.log(await file.seek(2, SeekMode.Current)); // "8"
-	 * // Seek backwards 2 bytes from the end of the file
-	 * console.log(await file.seek(-2, SeekMode.End)); // "9" (e.g. 11-2)
-	 * ```
-	 *
-	 * @since 2.0.0
-	 */
-	async seek(offset: number, whence: SeekMode): Promise<number> {
-		return await invoke("plugin:fs|seek", {
-			rid: this.rid,
-			offset,
-			whence,
-		});
-	}
+  /**
+   * Seek sets the offset for the next `read()` or `write()` to offset,
+   * interpreted according to `whence`: `Start` means relative to the
+   * start of the file, `Current` means relative to the current offset,
+   * and `End` means relative to the end. Seek resolves to the new offset
+   * relative to the start of the file.
+   *
+   * Seeking to an offset before the start of the file is an error. Seeking to
+   * any positive offset is legal, but the behavior of subsequent I/O
+   * operations on the underlying object is implementation-dependent.
+   * It returns the number of cursor position.
+   *
+   * @example
+   * ```typescript
+   * import { open, SeekMode, BaseDirectory } from '@tauri-apps/plugin-fs';
+   *
+   * // Given hello.txt pointing to file with "Hello world", which is 11 bytes long:
+   * const file = await open('hello.txt', { read: true, write: true, truncate: true, create: true, baseDir: BaseDirectory.AppLocalData });
+   * await file.write(new TextEncoder().encode("Hello world"));
+   *
+   * // Seek 6 bytes from the start of the file
+   * console.log(await file.seek(6, SeekMode.Start)); // "6"
+   * // Seek 2 more bytes from the current position
+   * console.log(await file.seek(2, SeekMode.Current)); // "8"
+   * // Seek backwards 2 bytes from the end of the file
+   * console.log(await file.seek(-2, SeekMode.End)); // "9" (e.g. 11-2)
+   *
+   * await file.close();
+   * ```
+   *
+   * @since 2.0.0
+   */
+  async seek(offset: number, whence: SeekMode): Promise<number> {
+    return await invoke("plugin:fs|seek", {
+      rid: this.rid,
+      offset,
+      whence,
+    });
+  }
 
-	/**
-	 * Returns a {@linkcode FileInfo } for this file.
-	 *
-	 * @example
-	 * ```typescript
-	 * import { open, fstat, BaseDirectory } from '@tauri-apps/plugin-fs';
-	 * const file = await open("file.txt", { read: true, baseDir: BaseDirectory.App });
-	 * const fileInfo = await fstat(file.rid);
-	 * console.log(fileInfo.isFile); // true
-	 * ```
-	 *
-	 * @since 2.0.0
-	 */
-	async stat(): Promise<FileInfo> {
-		const res = await invoke<UnparsedFileInfo>("plugin:fs|fstat", {
-			rid: this.rid,
-		});
+  /**
+   * Returns a {@linkcode FileInfo } for this file.
+   *
+   * @example
+   * ```typescript
+   * import { open, BaseDirectory } from '@tauri-apps/plugin-fs';
+   * const file = await open("file.txt", { read: true, baseDir: BaseDirectory.AppLocalData });
+   * const fileInfo = await file.stat();
+   * console.log(fileInfo.isFile); // true
+   * await file.close();
+   * ```
+   *
+   * @since 2.0.0
+   */
+  async stat(): Promise<FileInfo> {
+    const res = await invoke<UnparsedFileInfo>("plugin:fs|fstat", {
+      rid: this.rid,
+    });
 
 		return parseFileInfo(res);
 	}
 
-	/**
-	 * Truncates or extends this file, to reach the specified `len`.
-	 * If `len` is not specified then the entire file contents are truncated.
-	 *
-	 * @example
-	 * ```typescript
-	 * import { ftruncate, open, write, read, BaseDirectory } from '@tauri-apps/plugin-fs';
-	 *
-	 * // truncate the entire file
-	 * const file = await open("my_file.txt", { read: true, write: true, create: true, baseDir: BaseDirectory.App });
-	 * await ftruncate(file.rid);
-	 *
-	 * // truncate part of the file
-	 * const file = await open("my_file.txt", { read: true, write: true, create: true, baseDir: BaseDirectory.App });
-	 * await write(file.rid, new TextEncoder().encode("Hello World"));
-	 * await ftruncate(file.rid, 7);
-	 * const data = new Uint8Array(32);
-	 * await read(file.rid, data);
-	 * console.log(new TextDecoder().decode(data)); // Hello W
-	 * ```
-	 *
-	 * @since 2.0.0
-	 */
-	async truncate(len?: number): Promise<void> {
-		await invoke("plugin:fs|ftruncate", {
-			rid: this.rid,
-			len,
-		});
-	}
+  /**
+   * Truncates or extends this file, to reach the specified `len`.
+   * If `len` is not specified then the entire file contents are truncated.
+   *
+   * @example
+   * ```typescript
+   * import { open, BaseDirectory } from '@tauri-apps/plugin-fs';
+   *
+   * // truncate the entire file
+   * const file = await open("my_file.txt", { read: true, write: true, create: true, baseDir: BaseDirectory.AppLocalData });
+   * await file.truncate();
+   *
+   * // truncate part of the file
+   * const file = await open("my_file.txt", { read: true, write: true, create: true, baseDir: BaseDirectory.AppLocalData });
+   * await file.write(new TextEncoder().encode("Hello World"));
+   * await file.truncate(7);
+   * const data = new Uint8Array(32);
+   * await file.read(data);
+   * console.log(new TextDecoder().decode(data)); // Hello W
+   * await file.close();
+   * ```
+   *
+   * @since 2.0.0
+   */
+  async truncate(len?: number): Promise<void> {
+    await invoke("plugin:fs|ftruncate", {
+      rid: this.rid,
+      len,
+    });
+  }
 
-	/**
-	 * Writes `p.byteLength` bytes from `p` to the underlying data stream. It
-	 * resolves to the number of bytes written from `p` (`0` <= `n` <=
-	 * `p.byteLength`) or reject with the error encountered that caused the
-	 * write to stop early. `write()` must reject with a non-null error if
-	 * would resolve to `n` < `p.byteLength`. `write()` must not modify the
-	 * slice data, even temporarily.
-	 *
-	 * @example
-	 * ```typescript
-	 * import { open, write, close, BaseDirectory } from '@tauri-apps/plugin-fs';
-	 * const encoder = new TextEncoder();
-	 * const data = encoder.encode("Hello world");
-	 * const file = await open("bar.txt", { write: true, baseDir: BaseDirectory.App });
-	 * const bytesWritten = await write(file.rid, data); // 11
-	 * await close(file.rid);
-	 * ```
-	 *
-	 * @since 2.0.0
-	 */
-	async write(data: Uint8Array): Promise<number> {
-		return await invoke("plugin:fs|write", {
-			rid: this.rid,
-			data: Array.from(data),
-		});
-	}
+  /**
+   * Writes `p.byteLength` bytes from `p` to the underlying data stream. It
+   * resolves to the number of bytes written from `p` (`0` <= `n` <=
+   * `p.byteLength`) or reject with the error encountered that caused the
+   * write to stop early. `write()` must reject with a non-null error if
+   * would resolve to `n` < `p.byteLength`. `write()` must not modify the
+   * slice data, even temporarily.
+   *
+   * @example
+   * ```typescript
+   * import { open, write, BaseDirectory } from '@tauri-apps/plugin-fs';
+   * const encoder = new TextEncoder();
+   * const data = encoder.encode("Hello world");
+   * const file = await open("bar.txt", { write: true, baseDir: BaseDirectory.AppLocalData });
+   * const bytesWritten = await file.write(data); // 11
+   * await file.close();
+   * ```
+   *
+   * @since 2.0.0
+   */
+  async write(data: Uint8Array): Promise<number> {
+    return await invoke("plugin:fs|write", {
+      rid: this.rid,
+      data: Array.from(data),
+    });
+  }
 }
 
 /**
@@ -430,7 +434,9 @@ interface CreateOptions {
  * @example
  * ```typescript
  * import { create, BaseDirectory } from "@tauri-apps/plugin-fs"
- * const file = await create("foo/bar.txt", { baseDir: BaseDirectory.App });
+ * const file = await create("foo/bar.txt", { baseDir: BaseDirectory.AppConfig });
+ * await file.write(new TextEncoder().encode("Hello world"));
+ * await file.close();
  * ```
  *
  * @since 2.0.0
@@ -513,9 +519,9 @@ interface OpenOptions {
  * @example
  * ```typescript
  * import { open, BaseDirectory } from "@tauri-apps/plugin-fs"
- * const file = await open("foo/bar.txt", { read: true, write: true, baseDir: BaseDirectory.App });
+ * const file = await open("foo/bar.txt", { read: true, write: true, baseDir: BaseDirectory.AppLocalData });
  * // Do work with file
- * await close(file.rid);
+ * await file.close();
  * ```
  *
  * @since 2.0.0
@@ -551,7 +557,7 @@ interface CopyFileOptions {
  * @example
  * ```typescript
  * import { copyFile, BaseDirectory } from '@tauri-apps/plugin-fs';
- * await copyFile('app.conf', 'app.conf.bk', { fromPathBaseDir: BaseDirectory.App, toPathBaseDir: BaseDirectory.App });
+ * await copyFile('app.conf', 'app.conf.bk', { fromPathBaseDir: BaseDirectory.AppConfig, toPathBaseDir: BaseDirectory.AppConfig });
  * ```
  *
  * @since 2.0.0
@@ -594,7 +600,7 @@ interface MkdirOptions {
  * @example
  * ```typescript
  * import { mkdir, BaseDirectory } from '@tauri-apps/plugin-fs';
- * await mkdir('users', { baseDir: BaseDirectory.App });
+ * await mkdir('users', { baseDir: BaseDirectory.AppLocalData });
  * ```
  *
  * @since 2.0.0
@@ -646,14 +652,14 @@ interface DirEntry {
  * import { readDir, BaseDirectory } from '@tauri-apps/plugin-fs';
  * import { join } from '@tauri-apps/api/path';
  * const dir = "users"
- * const entries = await readDir('users', { baseDir: BaseDirectory.App });
- * processEntriesRecursive(dir, entries);
- * async function processEntriesRecursive(parent, entries) {
+ * const entries = await readDir('users', { baseDir: BaseDirectory.AppLocalData });
+ * processEntriesRecursively(dir, entries);
+ * async function processEntriesRecursively(parent, entries) {
  *   for (const entry of entries) {
  *     console.log(`Entry: ${entry.name}`);
  *     if (entry.isDirectory) {
  *        const dir = await join(parent, entry.name);
- *       processEntriesRecursive(dir, await readDir(dir, { baseDir: BaseDirectory.App }))
+ *       processEntriesRecursively(dir, await readDir(dir, { baseDir: BaseDirectory.AppLocalData }))
  *     }
  *   }
  * }
@@ -717,7 +723,7 @@ async function readFile(
  * @example
  * ```typescript
  * import { readTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
- * const contents = await readTextFile('app.conf', { baseDir: BaseDirectory.App });
+ * const contents = await readTextFile('app.conf', { baseDir: BaseDirectory.AppConfig });
  * ```
  *
  * @since 2.0.0
@@ -741,7 +747,7 @@ async function readTextFile(
  * @example
  * ```typescript
  * import { readTextFileLines, BaseDirectory } from '@tauri-apps/plugin-fs';
- * const lines = await readTextFileLines('app.conf', { baseDir: BaseDirectory.App });
+ * const lines = await readTextFileLines('app.conf', { baseDir: BaseDirectory.AppConfig });
  * for await (const line of lines) {
  *   console.log(line);
  * }
@@ -810,8 +816,8 @@ interface RemoveOptions {
  * @example
  * ```typescript
  * import { remove, BaseDirectory } from '@tauri-apps/plugin-fs';
- * await remove('users/file.txt', { baseDir: BaseDirectory.App });
- * await remove('users', { baseDir: BaseDirectory.App });
+ * await remove('users/file.txt', { baseDir: BaseDirectory.AppLocalData });
+ * await remove('users', { baseDir: BaseDirectory.AppLocalData });
  * ```
  *
  * @since 2.0.0
@@ -850,7 +856,7 @@ interface RenameOptions {
  * @example
  * ```typescript
  * import { rename, BaseDirectory } from '@tauri-apps/plugin-fs';
- * await rename('avatar.png', 'deleted.png', { oldPathBaseDir: BaseDirectory.App, newPathBaseDir: BaseDirectory.App });
+ * await rename('avatar.png', 'deleted.png', { oldPathBaseDir: BaseDirectory.App, newPathBaseDir: BaseDirectory.AppLocalData });
  * ```
  *
  * @since 2.0.0
@@ -889,7 +895,7 @@ interface StatOptions {
  * @example
  * ```typescript
  * import { stat, BaseDirectory } from '@tauri-apps/plugin-fs';
- * const fileInfo = await stat("hello.txt", { baseDir: BaseDirectory.App });
+ * const fileInfo = await stat("hello.txt", { baseDir: BaseDirectory.AppLocalData });
  * console.log(fileInfo.isFile); // true
  * ```
  *
@@ -915,7 +921,7 @@ async function stat(
  * @example
  * ```typescript
  * import { lstat, BaseDirectory } from '@tauri-apps/plugin-fs';
- * const fileInfo = await lstat("hello.txt", { baseDir: BaseDirectory.App });
+ * const fileInfo = await lstat("hello.txt", { baseDir: BaseDirectory.AppLocalData });
  * console.log(fileInfo.isFile); // true
  * ```
  *
@@ -947,16 +953,16 @@ interface TruncateOptions {
  *
  * @example
  * ```typescript
- * import { truncate, readFile, writeFile, BaseDirectory } from '@tauri-apps/plugin-fs';
+ * import { truncate, readTextFile, writeTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
  * // truncate the entire file
- * await truncate("my_file.txt", 0, { baseDir: BaseDirectory.App });
+ * await truncate("my_file.txt", 0, { baseDir: BaseDirectory.AppLocalData });
  *
  * // truncate part of the file
- * let file = "file.txt";
- * await writeFile(file, new TextEncoder().encode("Hello World"), { baseDir: BaseDirectory.App });
- * await truncate(file, 7);
- * const data = await readFile(file, { baseDir: BaseDirectory.App });
- * console.log(new TextDecoder().decode(data));  // "Hello W"
+ * const filePath = "file.txt";
+ * await writeTextFile(filePath, "Hello World", { baseDir: BaseDirectory.AppLocalData });
+ * await truncate(filePath, 7, { baseDir: BaseDirectory.AppLocalData });
+ * const data = await readTextFile(filePath, { baseDir: BaseDirectory.AppLocalData });
+ * console.log(data);  // "Hello W"
  * ```
  *
  * @since 2.0.0
@@ -1001,7 +1007,7 @@ interface WriteFileOptions {
  *
  * let encoder = new TextEncoder();
  * let data = encoder.encode("Hello World");
- * await writeFile('file.txt', data, { baseDir: BaseDirectory.App });
+ * await writeFile('file.txt', data, { baseDir: BaseDirectory.AppLocalData });
  * ```
  *
  * @since 2.0.0
@@ -1029,7 +1035,7 @@ async function writeFile(
   * ```typescript
   * import { writeTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
   *
-  * await writeTextFile('file.txt', "Hello world", { baseDir: BaseDirectory.App });
+  * await writeTextFile('file.txt', "Hello world", { baseDir: BaseDirectory.AppLocalData });
   * ```
   *
   * @since 2.0.0
