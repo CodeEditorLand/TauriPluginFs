@@ -67,9 +67,9 @@ Afterwards all the plugin's APIs are available through the JavaScript guest
 bindings:
 
 ```javascript
-import { metadata } from "@tauri-apps/plugin-fs";
+import { metadata } from '@tauri-apps/plugin-fs'
 
-await metadata("/path/to/file");
+await metadata('/path/to/file')
 ```
 
 ## Contributing
