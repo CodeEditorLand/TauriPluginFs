@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-var path = require("@tauri-apps/api/path");
-var core = require("@tauri-apps/api/core");
+var path = require('@tauri-apps/api/path');
+var core = require('@tauri-apps/api/core');
 
 // Copyright 2019-2023 Tauri Programme within The Commons Conservancy
 // SPDX-License-Identifier: Apache-2.0
@@ -66,9 +66,9 @@ var core = require("@tauri-apps/api/core");
  */
 exports.SeekMode = void 0;
 (function (SeekMode) {
-	SeekMode[(SeekMode["Start"] = 0)] = "Start";
-	SeekMode[(SeekMode["Current"] = 1)] = "Current";
-	SeekMode[(SeekMode["End"] = 2)] = "End";
+    SeekMode[SeekMode["Start"] = 0] = "Start";
+    SeekMode[SeekMode["Current"] = 1] = "Current";
+    SeekMode[SeekMode["End"] = 2] = "End";
 })(exports.SeekMode || (exports.SeekMode = {}));
 function parseFileInfo(r) {
     return {
@@ -705,10 +705,8 @@ async function watchImmediate(paths, cb, options) {
 }
 
 Object.defineProperty(exports, "BaseDirectory", {
-	enumerable: true,
-	get: function () {
-		return path.BaseDirectory;
-	},
+  enumerable: true,
+  get: function () { return path.BaseDirectory; }
 });
 exports.FileHandle = FileHandle;
 exports.copyFile = copyFile;

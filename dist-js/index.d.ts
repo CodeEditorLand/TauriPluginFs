@@ -59,9 +59,9 @@
 import { BaseDirectory } from '@tauri-apps/api/path';
 import { Resource } from '@tauri-apps/api/core';
 declare enum SeekMode {
-	Start = 0,
-	Current = 1,
-	End = 2,
+    Start = 0,
+    Current = 1,
+    End = 2
 }
 /**
  * A FileInfo describes a file and is returned by `stat`, `lstat` or `fstat`.
@@ -69,128 +69,128 @@ declare enum SeekMode {
  * @since 2.0.0
  */
 interface FileInfo {
-	/**
-	 * True if this is info for a regular file. Mutually exclusive to
-	 * `FileInfo.isDirectory` and `FileInfo.isSymlink`.
-	 */
-	isFile: boolean;
-	/**
-	 * True if this is info for a regular directory. Mutually exclusive to
-	 * `FileInfo.isFile` and `FileInfo.isSymlink`.
-	 */
-	isDirectory: boolean;
-	/**
-	 * True if this is info for a symlink. Mutually exclusive to
-	 * `FileInfo.isFile` and `FileInfo.isDirectory`.
-	 */
-	isSymlink: boolean;
-	/**
-	 * The size of the file, in bytes.
-	 */
-	size: number;
-	/**
-	 * The last modification time of the file. This corresponds to the `mtime`
-	 * field from `stat` on Linux/Mac OS and `ftLastWriteTime` on Windows. This
-	 * may not be available on all platforms.
-	 */
-	mtime: Date | null;
-	/**
-	 * The last access time of the file. This corresponds to the `atime`
-	 * field from `stat` on Unix and `ftLastAccessTime` on Windows. This may not
-	 * be available on all platforms.
-	 */
-	atime: Date | null;
-	/**
-	 * The creation time of the file. This corresponds to the `birthtime`
-	 * field from `stat` on Mac/BSD and `ftCreationTime` on Windows. This may
-	 * not be available on all platforms.
-	 */
-	birthtime: Date | null;
-	/** Whether this is a readonly (unwritable) file. */
-	readonly: boolean;
-	/**
-	 * This field contains the file system attribute information for a file
-	 * or directory. For possible values and their descriptions, see
-	 * {@link https://docs.microsoft.com/en-us/windows/win32/fileio/file-attribute-constants | File Attribute Constants} in the Windows Dev Center
-	 *
-	 * #### Platform-specific
-	 *
-	 * - **macOS / Linux / Android / iOS:** Unsupported.
-	 */
-	fileAttributes: number | null;
-	/**
-	 * ID of the device containing the file.
-	 *
-	 * #### Platform-specific
-	 *
-	 * - **Windows:** Unsupported.
-	 */
-	dev: number | null;
-	/**
-	 * Inode number.
-	 *
-	 * #### Platform-specific
-	 *
-	 * - **Windows:** Unsupported.
-	 */
-	ino: number | null;
-	/**
-	 * The underlying raw `st_mode` bits that contain the standard Unix
-	 * permissions for this file/directory.
-	 *
-	 * #### Platform-specific
-	 *
-	 * - **Windows:** Unsupported.
-	 */
-	mode: number | null;
-	/**
-	 * Number of hard links pointing to this file.
-	 *
-	 * #### Platform-specific
-	 *
-	 * - **Windows:** Unsupported.
-	 */
-	nlink: number | null;
-	/**
-	 * User ID of the owner of this file.
-	 *
-	 * #### Platform-specific
-	 *
-	 * - **Windows:** Unsupported.
-	 */
-	uid: number | null;
-	/**
-	 * Group ID of the owner of this file.
-	 *
-	 * #### Platform-specific
-	 *
-	 * - **Windows:** Unsupported.
-	 */
-	gid: number | null;
-	/**
-	 * Device ID of this file.
-	 *
-	 * #### Platform-specific
-	 *
-	 * - **Windows:** Unsupported.
-	 */
-	rdev: number | null;
-	/**
-	 * Blocksize for filesystem I/O.
-	 *
-	 * #### Platform-specific
-	 *
-	 * - **Windows:** Unsupported.
-	 */
-	blksize: number | null;
-	/**
-	 * Number of blocks allocated to the file, in 512-byte units.
-	 *
-	 * #### Platform-specific
-	 *
-	 * - **Windows:** Unsupported.
-	 */
-	blocks: number | null;
+    /**
+     * True if this is info for a regular file. Mutually exclusive to
+     * `FileInfo.isDirectory` and `FileInfo.isSymlink`.
+     */
+    isFile: boolean;
+    /**
+     * True if this is info for a regular directory. Mutually exclusive to
+     * `FileInfo.isFile` and `FileInfo.isSymlink`.
+     */
+    isDirectory: boolean;
+    /**
+     * True if this is info for a symlink. Mutually exclusive to
+     * `FileInfo.isFile` and `FileInfo.isDirectory`.
+     */
+    isSymlink: boolean;
+    /**
+     * The size of the file, in bytes.
+     */
+    size: number;
+    /**
+     * The last modification time of the file. This corresponds to the `mtime`
+     * field from `stat` on Linux/Mac OS and `ftLastWriteTime` on Windows. This
+     * may not be available on all platforms.
+     */
+    mtime: Date | null;
+    /**
+     * The last access time of the file. This corresponds to the `atime`
+     * field from `stat` on Unix and `ftLastAccessTime` on Windows. This may not
+     * be available on all platforms.
+     */
+    atime: Date | null;
+    /**
+     * The creation time of the file. This corresponds to the `birthtime`
+     * field from `stat` on Mac/BSD and `ftCreationTime` on Windows. This may
+     * not be available on all platforms.
+     */
+    birthtime: Date | null;
+    /** Whether this is a readonly (unwritable) file. */
+    readonly: boolean;
+    /**
+     * This field contains the file system attribute information for a file
+     * or directory. For possible values and their descriptions, see
+     * {@link https://docs.microsoft.com/en-us/windows/win32/fileio/file-attribute-constants | File Attribute Constants} in the Windows Dev Center
+     *
+     * #### Platform-specific
+     *
+     * - **macOS / Linux / Android / iOS:** Unsupported.
+     */
+    fileAttributes: number | null;
+    /**
+     * ID of the device containing the file.
+     *
+     * #### Platform-specific
+     *
+     * - **Windows:** Unsupported.
+     */
+    dev: number | null;
+    /**
+     * Inode number.
+     *
+     * #### Platform-specific
+     *
+     * - **Windows:** Unsupported.
+     */
+    ino: number | null;
+    /**
+     * The underlying raw `st_mode` bits that contain the standard Unix
+     * permissions for this file/directory.
+     *
+     * #### Platform-specific
+     *
+     * - **Windows:** Unsupported.
+     */
+    mode: number | null;
+    /**
+     * Number of hard links pointing to this file.
+     *
+     * #### Platform-specific
+     *
+     * - **Windows:** Unsupported.
+     */
+    nlink: number | null;
+    /**
+     * User ID of the owner of this file.
+     *
+     * #### Platform-specific
+     *
+     * - **Windows:** Unsupported.
+     */
+    uid: number | null;
+    /**
+     * Group ID of the owner of this file.
+     *
+     * #### Platform-specific
+     *
+     * - **Windows:** Unsupported.
+     */
+    gid: number | null;
+    /**
+     * Device ID of this file.
+     *
+     * #### Platform-specific
+     *
+     * - **Windows:** Unsupported.
+     */
+    rdev: number | null;
+    /**
+     * Blocksize for filesystem I/O.
+     *
+     * #### Platform-specific
+     *
+     * - **Windows:** Unsupported.
+     */
+    blksize: number | null;
+    /**
+     * Number of blocks allocated to the file, in 512-byte units.
+     *
+     * #### Platform-specific
+     *
+     * - **Windows:** Unsupported.
+     */
+    blocks: number | null;
 }
 /**
  *  The Tauri abstraction for reading and writing files.
@@ -329,8 +329,8 @@ declare class FileHandle extends Resource {
  * @since 2.0.0
  */
 interface CreateOptions {
-	/** Base directory for `path` */
-	baseDir?: BaseDirectory;
+    /** Base directory for `path` */
+    baseDir?: BaseDirectory;
 }
 /**
  * Creates a file if none exists or truncates an existing file and resolves to
@@ -346,61 +346,58 @@ interface CreateOptions {
  *
  * @since 2.0.0
  */
-declare function create(
-	path: string | URL,
-	options?: CreateOptions,
-): Promise<FileHandle>;
+declare function create(path: string | URL, options?: CreateOptions): Promise<FileHandle>;
 /**
  * @since 2.0.0
  */
 interface OpenOptions {
-	/**
-	 * Sets the option for read access. This option, when `true`, means that the
-	 * file should be read-able if opened.
-	 */
-	read?: boolean;
-	/**
-	 * Sets the option for write access. This option, when `true`, means that
-	 * the file should be write-able if opened. If the file already exists,
-	 * any write calls on it will overwrite its contents, by default without
-	 * truncating it.
-	 */
-	write?: boolean;
-	/**
-	 * Sets the option for the append mode. This option, when `true`, means that
-	 * writes will append to a file instead of overwriting previous contents.
-	 * Note that setting `{ write: true, append: true }` has the same effect as
-	 * setting only `{ append: true }`.
-	 */
-	append?: boolean;
-	/**
-	 * Sets the option for truncating a previous file. If a file is
-	 * successfully opened with this option set it will truncate the file to `0`
-	 * size if it already exists. The file must be opened with write access
-	 * for truncate to work.
-	 */
-	truncate?: boolean;
-	/**
-	 * Sets the option to allow creating a new file, if one doesn't already
-	 * exist at the specified path. Requires write or append access to be
-	 * used.
-	 */
-	create?: boolean;
-	/**
-	 * Defaults to `false`. If set to `true`, no file, directory, or symlink is
-	 * allowed to exist at the target location. Requires write or append
-	 * access to be used. When createNew is set to `true`, create and truncate
-	 * are ignored.
-	 */
-	createNew?: boolean;
-	/**
-	 * Permissions to use if creating the file (defaults to `0o666`, before
-	 * the process's umask).
-	 * Ignored on Windows.
-	 */
-	mode?: number;
-	/** Base directory for `path` */
-	baseDir?: BaseDirectory;
+    /**
+     * Sets the option for read access. This option, when `true`, means that the
+     * file should be read-able if opened.
+     */
+    read?: boolean;
+    /**
+     * Sets the option for write access. This option, when `true`, means that
+     * the file should be write-able if opened. If the file already exists,
+     * any write calls on it will overwrite its contents, by default without
+     * truncating it.
+     */
+    write?: boolean;
+    /**
+     * Sets the option for the append mode. This option, when `true`, means that
+     * writes will append to a file instead of overwriting previous contents.
+     * Note that setting `{ write: true, append: true }` has the same effect as
+     * setting only `{ append: true }`.
+     */
+    append?: boolean;
+    /**
+     * Sets the option for truncating a previous file. If a file is
+     * successfully opened with this option set it will truncate the file to `0`
+     * size if it already exists. The file must be opened with write access
+     * for truncate to work.
+     */
+    truncate?: boolean;
+    /**
+     * Sets the option to allow creating a new file, if one doesn't already
+     * exist at the specified path. Requires write or append access to be
+     * used.
+     */
+    create?: boolean;
+    /**
+     * Defaults to `false`. If set to `true`, no file, directory, or symlink is
+     * allowed to exist at the target location. Requires write or append
+     * access to be used. When createNew is set to `true`, create and truncate
+     * are ignored.
+     */
+    createNew?: boolean;
+    /**
+     * Permissions to use if creating the file (defaults to `0o666`, before
+     * the process's umask).
+     * Ignored on Windows.
+     */
+    mode?: number;
+    /** Base directory for `path` */
+    baseDir?: BaseDirectory;
 }
 /**
  * Open a file and resolve to an instance of {@linkcode FileHandle}. The
@@ -418,18 +415,15 @@ interface OpenOptions {
  *
  * @since 2.0.0
  */
-declare function open(
-	path: string | URL,
-	options?: OpenOptions,
-): Promise<FileHandle>;
+declare function open(path: string | URL, options?: OpenOptions): Promise<FileHandle>;
 /**
  * @since 2.0.0
  */
 interface CopyFileOptions {
-	/** Base directory for `fromPath`. */
-	fromPathBaseDir?: BaseDirectory;
-	/** Base directory for `toPath`. */
-	toPathBaseDir?: BaseDirectory;
+    /** Base directory for `fromPath`. */
+    fromPathBaseDir?: BaseDirectory;
+    /** Base directory for `toPath`. */
+    toPathBaseDir?: BaseDirectory;
 }
 /**
  * Copies the contents and permissions of one file to another specified path, by default creating a new file if needed, else overwriting.
@@ -441,23 +435,19 @@ interface CopyFileOptions {
  *
  * @since 2.0.0
  */
-declare function copyFile(
-	fromPath: string | URL,
-	toPath: string | URL,
-	options?: CopyFileOptions,
-): Promise<void>;
+declare function copyFile(fromPath: string | URL, toPath: string | URL, options?: CopyFileOptions): Promise<void>;
 /**
  * @since 2.0.0
  */
 interface MkdirOptions {
-	/** Permissions to use when creating the directory (defaults to `0o777`, before the process's umask). Ignored on Windows. */
-	mode?: number;
-	/**
-	 * Defaults to `false`. If set to `true`, means that any intermediate directories will also be created (as with the shell command `mkdir -p`).
-	 * */
-	recursive?: boolean;
-	/** Base directory for `path` */
-	baseDir?: BaseDirectory;
+    /** Permissions to use when creating the directory (defaults to `0o777`, before the process's umask). Ignored on Windows. */
+    mode?: number;
+    /**
+     * Defaults to `false`. If set to `true`, means that any intermediate directories will also be created (as with the shell command `mkdir -p`).
+     * */
+    recursive?: boolean;
+    /** Base directory for `path` */
+    baseDir?: BaseDirectory;
 }
 /**
  * Creates a new directory with the specified path.
@@ -469,16 +459,13 @@ interface MkdirOptions {
  *
  * @since 2.0.0
  */
-declare function mkdir(
-	path: string | URL,
-	options?: MkdirOptions,
-): Promise<void>;
+declare function mkdir(path: string | URL, options?: MkdirOptions): Promise<void>;
 /**
  * @since 2.0.0
  */
 interface ReadDirOptions {
-	/** Base directory for `path` */
-	baseDir?: BaseDirectory;
+    /** Base directory for `path` */
+    baseDir?: BaseDirectory;
 }
 /**
  * A disk entry which is either a file, a directory or a symlink.
@@ -488,14 +475,14 @@ interface ReadDirOptions {
  * @since 2.0.0
  */
 interface DirEntry {
-	/** The name of the entry (file name with extension or directory name). */
-	name: string;
-	/** Specifies whether this entry is a directory or not. */
-	isDirectory: boolean;
-	/** Specifies whether this entry is a file or not. */
-	isFile: boolean;
-	/** Specifies whether this entry is a symlink or not. */
-	isSymlink: boolean;
+    /** The name of the entry (file name with extension or directory name). */
+    name: string;
+    /** Specifies whether this entry is a directory or not. */
+    isDirectory: boolean;
+    /** Specifies whether this entry is a file or not. */
+    isFile: boolean;
+    /** Specifies whether this entry is a symlink or not. */
+    isSymlink: boolean;
 }
 /**
  * Reads the directory given by path and returns an array of `DirEntry`.
@@ -519,16 +506,13 @@ interface DirEntry {
  *
  * @since 2.0.0
  */
-declare function readDir(
-	path: string | URL,
-	options?: ReadDirOptions,
-): Promise<DirEntry[]>;
+declare function readDir(path: string | URL, options?: ReadDirOptions): Promise<DirEntry[]>;
 /**
  * @since 2.0.0
  */
 interface ReadFileOptions {
-	/** Base directory for `path` */
-	baseDir?: BaseDirectory;
+    /** Base directory for `path` */
+    baseDir?: BaseDirectory;
 }
 /**
  * Reads and resolves to the entire contents of a file as an array of bytes.
@@ -541,10 +525,7 @@ interface ReadFileOptions {
  *
  * @since 2.0.0
  */
-declare function readFile(
-	path: string | URL,
-	options?: ReadFileOptions,
-): Promise<Uint8Array>;
+declare function readFile(path: string | URL, options?: ReadFileOptions): Promise<Uint8Array>;
 /**
  * Reads and returns the entire contents of a file as UTF-8 string.
  * @example
@@ -555,10 +536,7 @@ declare function readFile(
  *
  * @since 2.0.0
  */
-declare function readTextFile(
-	path: string | URL,
-	options?: ReadFileOptions,
-): Promise<string>;
+declare function readTextFile(path: string | URL, options?: ReadFileOptions): Promise<string>;
 /**
  * Returns an async {@linkcode AsyncIterableIterator} over the lines of a file as UTF-8 string.
  * @example
@@ -574,18 +552,15 @@ declare function readTextFile(
  *
  * @since 2.0.0
  */
-declare function readTextFileLines(
-	path: string | URL,
-	options?: ReadFileOptions,
-): Promise<AsyncIterableIterator<string>>;
+declare function readTextFileLines(path: string | URL, options?: ReadFileOptions): Promise<AsyncIterableIterator<string>>;
 /**
  * @since 2.0.0
  */
 interface RemoveOptions {
-	/** Defaults to `false`. If set to `true`, path will be removed even if it's a non-empty directory. */
-	recursive?: boolean;
-	/** Base directory for `path` */
-	baseDir?: BaseDirectory;
+    /** Defaults to `false`. If set to `true`, path will be removed even if it's a non-empty directory. */
+    recursive?: boolean;
+    /** Base directory for `path` */
+    baseDir?: BaseDirectory;
 }
 /**
  * Removes the named file or directory.
@@ -599,18 +574,15 @@ interface RemoveOptions {
  *
  * @since 2.0.0
  */
-declare function remove(
-	path: string | URL,
-	options?: RemoveOptions,
-): Promise<void>;
+declare function remove(path: string | URL, options?: RemoveOptions): Promise<void>;
 /**
  * @since 2.0.0
  */
 interface RenameOptions {
-	/** Base directory for `oldPath`. */
-	oldPathBaseDir?: BaseDirectory;
-	/** Base directory for `newPath`. */
-	newPathBaseDir?: BaseDirectory;
+    /** Base directory for `oldPath`. */
+    oldPathBaseDir?: BaseDirectory;
+    /** Base directory for `newPath`. */
+    newPathBaseDir?: BaseDirectory;
 }
 /**
  * Renames (moves) oldpath to newpath. Paths may be files or directories.
@@ -627,17 +599,13 @@ interface RenameOptions {
  *
  * @since 2.0.0
  */
-declare function rename(
-	oldPath: string | URL,
-	newPath: string | URL,
-	options?: RenameOptions,
-): Promise<void>;
+declare function rename(oldPath: string | URL, newPath: string | URL, options?: RenameOptions): Promise<void>;
 /**
  * @since 2.0.0
  */
 interface StatOptions {
-	/** Base directory for `path`. */
-	baseDir?: BaseDirectory;
+    /** Base directory for `path`. */
+    baseDir?: BaseDirectory;
 }
 /**
  * Resolves to a {@linkcode FileInfo} for the specified `path`. Will always
@@ -652,10 +620,7 @@ interface StatOptions {
  *
  * @since 2.0.0
  */
-declare function stat(
-	path: string | URL,
-	options?: StatOptions,
-): Promise<FileInfo>;
+declare function stat(path: string | URL, options?: StatOptions): Promise<FileInfo>;
 /**
  * Resolves to a {@linkcode FileInfo} for the specified `path`. If `path` is a
  * symlink, information for the symlink will be returned instead of what it
@@ -670,16 +635,13 @@ declare function stat(
  *
  * @since 2.0.0
  */
-declare function lstat(
-	path: string | URL,
-	options?: StatOptions,
-): Promise<FileInfo>;
+declare function lstat(path: string | URL, options?: StatOptions): Promise<FileInfo>;
 /**
  * @since 2.0.0
  */
 interface TruncateOptions {
-	/** Base directory for `path`. */
-	baseDir?: BaseDirectory;
+    /** Base directory for `path`. */
+    baseDir?: BaseDirectory;
 }
 /**
  * Truncates or extends the specified file, to reach the specified `len`.
@@ -701,25 +663,21 @@ interface TruncateOptions {
  *
  * @since 2.0.0
  */
-declare function truncate(
-	path: string | URL,
-	len?: number,
-	options?: TruncateOptions,
-): Promise<void>;
+declare function truncate(path: string | URL, len?: number, options?: TruncateOptions): Promise<void>;
 /**
  * @since 2.0.0
  */
 interface WriteFileOptions {
-	/** Defaults to `false`. If set to `true`, will append to a file instead of overwriting previous contents. */
-	append?: boolean;
-	/** Sets the option to allow creating a new file, if one doesn't already exist at the specified path (defaults to `true`). */
-	create?: boolean;
-	/** Sets the option to create a new file, failing if it already exists. */
-	createNew?: boolean;
-	/** File permissions. Ignored on Windows. */
-	mode?: number;
-	/** Base directory for `path` */
-	baseDir?: BaseDirectory;
+    /** Defaults to `false`. If set to `true`, will append to a file instead of overwriting previous contents. */
+    append?: boolean;
+    /** Sets the option to allow creating a new file, if one doesn't already exist at the specified path (defaults to `true`). */
+    create?: boolean;
+    /** Sets the option to create a new file, failing if it already exists. */
+    createNew?: boolean;
+    /** File permissions. Ignored on Windows. */
+    mode?: number;
+    /** Base directory for `path` */
+    baseDir?: BaseDirectory;
 }
 /**
  * Write `data` to the given `path`, by default creating a new file if needed, else overwriting.
@@ -734,11 +692,7 @@ interface WriteFileOptions {
  *
  * @since 2.0.0
  */
-declare function writeFile(
-	path: string | URL,
-	data: Uint8Array,
-	options?: WriteFileOptions,
-): Promise<void>;
+declare function writeFile(path: string | URL, data: Uint8Array, options?: WriteFileOptions): Promise<void>;
 /**
   * Writes UTF-8 string `data` to the given `path`, by default creating a new file if needed, else overwriting.
     @example
@@ -750,17 +704,13 @@ declare function writeFile(
   *
   * @since 2.0.0
   */
-declare function writeTextFile(
-	path: string | URL,
-	data: string,
-	options?: WriteFileOptions,
-): Promise<void>;
+declare function writeTextFile(path: string | URL, data: string, options?: WriteFileOptions): Promise<void>;
 /**
  * @since 2.0.0
  */
 interface ExistsOptions {
-	/** Base directory for `path`. */
-	baseDir?: BaseDirectory;
+    /** Base directory for `path`. */
+    baseDir?: BaseDirectory;
 }
 /**
  * Check if a path exists.
@@ -773,33 +723,30 @@ interface ExistsOptions {
  *
  * @since 2.0.0
  */
-declare function exists(
-	path: string | URL,
-	options?: ExistsOptions,
-): Promise<boolean>;
+declare function exists(path: string | URL, options?: ExistsOptions): Promise<boolean>;
 /**
  * @since 2.0.0
  */
 interface WatchOptions {
-	/** Watch a directory recursively */
-	recursive?: boolean;
-	/** Base directory for `path` */
-	baseDir?: BaseDirectory;
+    /** Watch a directory recursively */
+    recursive?: boolean;
+    /** Base directory for `path` */
+    baseDir?: BaseDirectory;
 }
 /**
  * @since 2.0.0
  */
 interface DebouncedWatchOptions extends WatchOptions {
-	/** Debounce delay */
-	delayMs?: number;
+    /** Debounce delay */
+    delayMs?: number;
 }
 /**
  * @since 2.0.0
  */
 interface WatchEvent {
-	type: WatchEventKind;
-	paths: string[];
-	attrs: unknown;
+    type: WatchEventKind;
+    paths: string[];
+    attrs: unknown;
 }
 /**
  * @since 2.0.0
@@ -877,11 +824,7 @@ type UnwatchFn = () => void;
  *
  * @since 2.0.0
  */
-declare function watch(
-	paths: string | string[] | URL | URL[],
-	cb: (event: WatchEvent) => void,
-	options?: DebouncedWatchOptions,
-): Promise<UnwatchFn>;
+declare function watch(paths: string | string[] | URL | URL[], cb: (event: WatchEvent) => void, options?: DebouncedWatchOptions): Promise<UnwatchFn>;
 /**
  * Watch changes on files or directories.
  *

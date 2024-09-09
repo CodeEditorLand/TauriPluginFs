@@ -1,5 +1,5 @@
-export { BaseDirectory } from "@tauri-apps/api/path";
-import { Resource, invoke, Channel } from "@tauri-apps/api/core";
+export { BaseDirectory } from '@tauri-apps/api/path';
+import { Resource, invoke, Channel } from '@tauri-apps/api/core';
 
 // Copyright 2019-2023 Tauri Programme within The Commons Conservancy
 // SPDX-License-Identifier: Apache-2.0
@@ -64,9 +64,9 @@ import { Resource, invoke, Channel } from "@tauri-apps/api/core";
  */
 var SeekMode;
 (function (SeekMode) {
-	SeekMode[(SeekMode["Start"] = 0)] = "Start";
-	SeekMode[(SeekMode["Current"] = 1)] = "Current";
-	SeekMode[(SeekMode["End"] = 2)] = "End";
+    SeekMode[SeekMode["Start"] = 0] = "Start";
+    SeekMode[SeekMode["Current"] = 1] = "Current";
+    SeekMode[SeekMode["End"] = 2] = "End";
 })(SeekMode || (SeekMode = {}));
 function parseFileInfo(r) {
     return {
@@ -702,25 +702,4 @@ async function watchImmediate(paths, cb, options) {
     };
 }
 
-export {
-	FileHandle,
-	SeekMode,
-	copyFile,
-	create,
-	exists,
-	lstat,
-	mkdir,
-	open,
-	readDir,
-	readFile,
-	readTextFile,
-	readTextFileLines,
-	remove,
-	rename,
-	stat,
-	truncate,
-	watch,
-	watchImmediate,
-	writeFile,
-	writeTextFile,
-};
+export { FileHandle, SeekMode, copyFile, create, exists, lstat, mkdir, open, readDir, readFile, readTextFile, readTextFileLines, remove, rename, stat, truncate, watch, watchImmediate, writeFile, writeTextFile };
