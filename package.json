@@ -1,5 +1,14 @@
 {
+<<<<<<< HEAD
 	"name": "@tauri-apps/plugin-fs",
+=======
+	"authors": [
+		"Tauri Programme within The Commons Conservancy"
+	],
+	"dependencies": {
+		"@tauri-apps/api": "2.0.0-rc.5"
+	},
+>>>>>>> 8e26075f323638da29dc792694d4514d76bc8dcc
 	"description": "Access the file system.",
 	"exports": {
 		"import": "./dist-js/index.js",
