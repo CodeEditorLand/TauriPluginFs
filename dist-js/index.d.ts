@@ -210,132 +210,132 @@ interface FileInfo {
  * @since 2.0.0
  */
 declare class FileHandle extends Resource {
-	/**
-	 * Reads up to `p.byteLength` bytes into `p`. It resolves to the number of
-	 * bytes read (`0` < `n` <= `p.byteLength`) and rejects if any error
-	 * encountered. Even if `read()` resolves to `n` < `p.byteLength`, it may
-	 * use all of `p` as scratch space during the call. If some data is
-	 * available but not `p.byteLength` bytes, `read()` conventionally resolves
-	 * to what is available instead of waiting for more.
-	 *
-	 * When `read()` encounters end-of-file condition, it resolves to EOF
-	 * (`null`).
-	 *
-	 * When `read()` encounters an error, it rejects with an error.
-	 *
-	 * Callers should always process the `n` > `0` bytes returned before
-	 * considering the EOF (`null`). Doing so correctly handles I/O errors that
-	 * happen after reading some bytes and also both of the allowed EOF
-	 * behaviors.
-	 *
-	 * @example
-	 * ```typescript
-	 * import { open, BaseDirectory } from "@tauri-apps/plugin-fs"
-	 * // if "$APPCONFIG/foo/bar.txt" contains the text "hello world":
-	 * const file = await open("foo/bar.txt", { baseDir: BaseDirectory.AppConfig });
-	 * const buf = new Uint8Array(100);
-	 * const numberOfBytesRead = await file.read(buf); // 11 bytes
-	 * const text = new TextDecoder().decode(buf);  // "hello world"
-	 * await file.close();
-	 * ```
-	 *
-	 * @since 2.0.0
-	 */
-	read(buffer: Uint8Array): Promise<number | null>;
-	/**
-	 * Seek sets the offset for the next `read()` or `write()` to offset,
-	 * interpreted according to `whence`: `Start` means relative to the
-	 * start of the file, `Current` means relative to the current offset,
-	 * and `End` means relative to the end. Seek resolves to the new offset
-	 * relative to the start of the file.
-	 *
-	 * Seeking to an offset before the start of the file is an error. Seeking to
-	 * any positive offset is legal, but the behavior of subsequent I/O
-	 * operations on the underlying object is implementation-dependent.
-	 * It returns the number of cursor position.
-	 *
-	 * @example
-	 * ```typescript
-	 * import { open, SeekMode, BaseDirectory } from '@tauri-apps/plugin-fs';
-	 *
-	 * // Given hello.txt pointing to file with "Hello world", which is 11 bytes long:
-	 * const file = await open('hello.txt', { read: true, write: true, truncate: true, create: true, baseDir: BaseDirectory.AppLocalData });
-	 * await file.write(new TextEncoder().encode("Hello world"));
-	 *
-	 * // Seek 6 bytes from the start of the file
-	 * console.log(await file.seek(6, SeekMode.Start)); // "6"
-	 * // Seek 2 more bytes from the current position
-	 * console.log(await file.seek(2, SeekMode.Current)); // "8"
-	 * // Seek backwards 2 bytes from the end of the file
-	 * console.log(await file.seek(-2, SeekMode.End)); // "9" (e.g. 11-2)
-	 *
-	 * await file.close();
-	 * ```
-	 *
-	 * @since 2.0.0
-	 */
-	seek(offset: number, whence: SeekMode): Promise<number>;
-	/**
-	 * Returns a {@linkcode FileInfo } for this file.
-	 *
-	 * @example
-	 * ```typescript
-	 * import { open, BaseDirectory } from '@tauri-apps/plugin-fs';
-	 * const file = await open("file.txt", { read: true, baseDir: BaseDirectory.AppLocalData });
-	 * const fileInfo = await file.stat();
-	 * console.log(fileInfo.isFile); // true
-	 * await file.close();
-	 * ```
-	 *
-	 * @since 2.0.0
-	 */
-	stat(): Promise<FileInfo>;
-	/**
-	 * Truncates or extends this file, to reach the specified `len`.
-	 * If `len` is not specified then the entire file contents are truncated.
-	 *
-	 * @example
-	 * ```typescript
-	 * import { open, BaseDirectory } from '@tauri-apps/plugin-fs';
-	 *
-	 * // truncate the entire file
-	 * const file = await open("my_file.txt", { read: true, write: true, create: true, baseDir: BaseDirectory.AppLocalData });
-	 * await file.truncate();
-	 *
-	 * // truncate part of the file
-	 * const file = await open("my_file.txt", { read: true, write: true, create: true, baseDir: BaseDirectory.AppLocalData });
-	 * await file.write(new TextEncoder().encode("Hello World"));
-	 * await file.truncate(7);
-	 * const data = new Uint8Array(32);
-	 * await file.read(data);
-	 * console.log(new TextDecoder().decode(data)); // Hello W
-	 * await file.close();
-	 * ```
-	 *
-	 * @since 2.0.0
-	 */
-	truncate(len?: number): Promise<void>;
-	/**
-	 * Writes `p.byteLength` bytes from `p` to the underlying data stream. It
-	 * resolves to the number of bytes written from `p` (`0` <= `n` <=
-	 * `p.byteLength`) or reject with the error encountered that caused the
-	 * write to stop early. `write()` must reject with a non-null error if
-	 * would resolve to `n` < `p.byteLength`. `write()` must not modify the
-	 * slice data, even temporarily.
-	 *
-	 * @example
-	 * ```typescript
-	 * import { open, write, BaseDirectory } from '@tauri-apps/plugin-fs';
-	 * const encoder = new TextEncoder();
-	 * const data = encoder.encode("Hello world");
-	 * const file = await open("bar.txt", { write: true, baseDir: BaseDirectory.AppLocalData });
-	 * const bytesWritten = await file.write(data); // 11
-	 * await file.close();
-	 * ```
-	 *
-	 * @since 2.0.0
-	 */
-	write(data: Uint8Array): Promise<number>;
+    /**
+     * Reads up to `p.byteLength` bytes into `p`. It resolves to the number of
+     * bytes read (`0` < `n` <= `p.byteLength`) and rejects if any error
+     * encountered. Even if `read()` resolves to `n` < `p.byteLength`, it may
+     * use all of `p` as scratch space during the call. If some data is
+     * available but not `p.byteLength` bytes, `read()` conventionally resolves
+     * to what is available instead of waiting for more.
+     *
+     * When `read()` encounters end-of-file condition, it resolves to EOF
+     * (`null`).
+     *
+     * When `read()` encounters an error, it rejects with an error.
+     *
+     * Callers should always process the `n` > `0` bytes returned before
+     * considering the EOF (`null`). Doing so correctly handles I/O errors that
+     * happen after reading some bytes and also both of the allowed EOF
+     * behaviors.
+     *
+     * @example
+     * ```typescript
+     * import { open, BaseDirectory } from "@tauri-apps/plugin-fs"
+     * // if "$APPCONFIG/foo/bar.txt" contains the text "hello world":
+     * const file = await open("foo/bar.txt", { baseDir: BaseDirectory.AppConfig });
+     * const buf = new Uint8Array(100);
+     * const numberOfBytesRead = await file.read(buf); // 11 bytes
+     * const text = new TextDecoder().decode(buf);  // "hello world"
+     * await file.close();
+     * ```
+     *
+     * @since 2.0.0
+     */
+    read(buffer: Uint8Array): Promise<number | null>;
+    /**
+     * Seek sets the offset for the next `read()` or `write()` to offset,
+     * interpreted according to `whence`: `Start` means relative to the
+     * start of the file, `Current` means relative to the current offset,
+     * and `End` means relative to the end. Seek resolves to the new offset
+     * relative to the start of the file.
+     *
+     * Seeking to an offset before the start of the file is an error. Seeking to
+     * any positive offset is legal, but the behavior of subsequent I/O
+     * operations on the underlying object is implementation-dependent.
+     * It returns the number of cursor position.
+     *
+     * @example
+     * ```typescript
+     * import { open, SeekMode, BaseDirectory } from '@tauri-apps/plugin-fs';
+     *
+     * // Given hello.txt pointing to file with "Hello world", which is 11 bytes long:
+     * const file = await open('hello.txt', { read: true, write: true, truncate: true, create: true, baseDir: BaseDirectory.AppLocalData });
+     * await file.write(new TextEncoder().encode("Hello world"));
+     *
+     * // Seek 6 bytes from the start of the file
+     * console.log(await file.seek(6, SeekMode.Start)); // "6"
+     * // Seek 2 more bytes from the current position
+     * console.log(await file.seek(2, SeekMode.Current)); // "8"
+     * // Seek backwards 2 bytes from the end of the file
+     * console.log(await file.seek(-2, SeekMode.End)); // "9" (e.g. 11-2)
+     *
+     * await file.close();
+     * ```
+     *
+     * @since 2.0.0
+     */
+    seek(offset: number, whence: SeekMode): Promise<number>;
+    /**
+     * Returns a {@linkcode FileInfo } for this file.
+     *
+     * @example
+     * ```typescript
+     * import { open, BaseDirectory } from '@tauri-apps/plugin-fs';
+     * const file = await open("file.txt", { read: true, baseDir: BaseDirectory.AppLocalData });
+     * const fileInfo = await file.stat();
+     * console.log(fileInfo.isFile); // true
+     * await file.close();
+     * ```
+     *
+     * @since 2.0.0
+     */
+    stat(): Promise<FileInfo>;
+    /**
+     * Truncates or extends this file, to reach the specified `len`.
+     * If `len` is not specified then the entire file contents are truncated.
+     *
+     * @example
+     * ```typescript
+     * import { open, BaseDirectory } from '@tauri-apps/plugin-fs';
+     *
+     * // truncate the entire file
+     * const file = await open("my_file.txt", { read: true, write: true, create: true, baseDir: BaseDirectory.AppLocalData });
+     * await file.truncate();
+     *
+     * // truncate part of the file
+     * const file = await open("my_file.txt", { read: true, write: true, create: true, baseDir: BaseDirectory.AppLocalData });
+     * await file.write(new TextEncoder().encode("Hello World"));
+     * await file.truncate(7);
+     * const data = new Uint8Array(32);
+     * await file.read(data);
+     * console.log(new TextDecoder().decode(data)); // Hello W
+     * await file.close();
+     * ```
+     *
+     * @since 2.0.0
+     */
+    truncate(len?: number): Promise<void>;
+    /**
+     * Writes `data.byteLength` bytes from `data` to the underlying data stream. It
+     * resolves to the number of bytes written from `data` (`0` <= `n` <=
+     * `data.byteLength`) or reject with the error encountered that caused the
+     * write to stop early. `write()` must reject with a non-null error if
+     * would resolve to `n` < `data.byteLength`. `write()` must not modify the
+     * slice data, even temporarily.
+     *
+     * @example
+     * ```typescript
+     * import { open, write, BaseDirectory } from '@tauri-apps/plugin-fs';
+     * const encoder = new TextEncoder();
+     * const data = encoder.encode("Hello world");
+     * const file = await open("bar.txt", { write: true, baseDir: BaseDirectory.AppLocalData });
+     * const bytesWritten = await file.write(data); // 11
+     * await file.close();
+     * ```
+     *
+     * @since 2.0.0
+     */
+    write(data: Uint8Array): Promise<number>;
 }
 /**
  * @since 2.0.0
@@ -746,11 +746,7 @@ interface WriteFileOptions {
  *
  * @since 2.0.0
  */
-declare function writeFile(
-	path: string | URL,
-	data: Uint8Array,
-	options?: WriteFileOptions,
-): Promise<void>;
+declare function writeFile(path: string | URL, data: Uint8Array | ReadableStream<Uint8Array>, options?: WriteFileOptions): Promise<void>;
 /**
   * Writes UTF-8 string `data` to the given `path`, by default creating a new file if needed, else overwriting.
     @example
