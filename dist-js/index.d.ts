@@ -925,56 +925,22 @@ declare function watch(
  *
  * @since 2.0.0
  */
-declare function watchImmediate(
-	paths: string | string[] | URL | URL[],
-	cb: (event: WatchEvent) => void,
-	options?: WatchOptions,
-): Promise<UnwatchFn>;
-export type {
-	CreateOptions,
-	OpenOptions,
-	CopyFileOptions,
-	MkdirOptions,
-	DirEntry,
-	ReadDirOptions,
-	ReadFileOptions,
-	RemoveOptions,
-	RenameOptions,
-	StatOptions,
-	TruncateOptions,
-	WriteFileOptions,
-	ExistsOptions,
-	FileInfo,
-	WatchOptions,
-	DebouncedWatchOptions,
-	WatchEvent,
-	WatchEventKind,
-	WatchEventKindAccess,
-	WatchEventKindCreate,
-	WatchEventKindModify,
-	WatchEventKindRemove,
-	UnwatchFn,
-};
-export {
-	BaseDirectory,
-	FileHandle,
-	create,
-	open,
-	copyFile,
-	mkdir,
-	readDir,
-	readFile,
-	readTextFile,
-	readTextFileLines,
-	remove,
-	rename,
-	SeekMode,
-	stat,
-	lstat,
-	truncate,
-	writeFile,
-	writeTextFile,
-	exists,
-	watch,
-	watchImmediate,
-};
+declare function watchImmediate(paths: string | string[] | URL | URL[], cb: (event: WatchEvent) => void, options?: WatchOptions): Promise<UnwatchFn>;
+/**
+ * Get the size of a file or directory. For files, the `stat` functions can be used as well.
+ *
+ * If `path` is a directory, this function will recursively iterate over every file and every directory inside of `path` and therefore will be very time consuming if used on larger directories.
+ *
+ * @example
+ * ```typescript
+ * import { size, BaseDirectory } from '@tauri-apps/plugin-fs';
+ * // Get the size of the `$APPDATA/tauri` directory.
+ * const dirSize = await size('tauri', { baseDir: BaseDirectory.AppData });
+ * console.log(dirSize); // 1024
+ * ```
+ *
+ * @since 2.1.0
+ */
+declare function size(path: string | URL): Promise<number>;
+export type { CreateOptions, OpenOptions, CopyFileOptions, MkdirOptions, DirEntry, ReadDirOptions, ReadFileOptions, RemoveOptions, RenameOptions, StatOptions, TruncateOptions, WriteFileOptions, ExistsOptions, FileInfo, WatchOptions, DebouncedWatchOptions, WatchEvent, WatchEventKind, WatchEventKindAccess, WatchEventKindCreate, WatchEventKindModify, WatchEventKindRemove, UnwatchFn };
+export { BaseDirectory, FileHandle, create, open, copyFile, mkdir, readDir, readFile, readTextFile, readTextFileLines, remove, rename, SeekMode, stat, lstat, truncate, writeFile, writeTextFile, exists, watch, watchImmediate, size };
