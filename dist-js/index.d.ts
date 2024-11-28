@@ -950,6 +950,7 @@ declare function watchImmediate(
  * @since 2.1.0
  */
 declare function size(path: string | URL): Promise<number>;
+
 export type {
 	CreateOptions,
 	OpenOptions,
@@ -975,6 +976,7 @@ export type {
 	WatchEventKindRemove,
 	UnwatchFn,
 };
+
 export {
 	BaseDirectory,
 	FileHandle,
