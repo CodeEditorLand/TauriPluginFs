@@ -810,7 +810,9 @@ interface DebouncedWatchOptions extends WatchOptions {
  */
 interface WatchEvent {
 	type: WatchEventKind;
+
 	paths: string[];
+
 	attrs: unknown;
 }
 /**
@@ -840,10 +842,12 @@ type WatchEventKindAccess =
 	  }
 	| {
 			kind: "close";
+
 			mode: "any" | "execute" | "read" | "write" | "other";
 	  }
 	| {
 			kind: "open";
+
 			mode: "any" | "execute" | "read" | "write" | "other";
 	  }
 	| {
@@ -874,10 +878,12 @@ type WatchEventKindModify =
 	  }
 	| {
 			kind: "data";
+
 			mode: "any" | "size" | "content" | "other";
 	  }
 	| {
 			kind: "metadata";
+
 			mode:
 				| "any"
 				| "access-time"
@@ -889,6 +895,7 @@ type WatchEventKindModify =
 	  }
 	| {
 			kind: "rename";
+
 			mode: "any" | "to" | "from" | "both" | "other";
 	  }
 	| {
