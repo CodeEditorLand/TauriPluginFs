@@ -26,6 +26,7 @@ pub fn init<R:Runtime, C:DeserializeOwned>(
 	let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "FsPlugin").unwrap();
 	#[cfg(target_os = "ios")]
 	let handle = api.register_ios_plugin(init_plugin_android - intent - send)?;
+
 	Ok(Fs(handle))
 }
 
@@ -80,9 +81,11 @@ impl<R:Runtime> Fs<R> {
 				"getFileDescriptor",
 				GetFileDescriptorPayload { uri:uri.into(), mode:mode.into() },
 			)?;
+
 			if let Some(fd) = result.fd {
 				Ok(unsafe {
 					use std::os::fd::FromRawFd;
+
 					std::fs::File::from_raw_fd(fd)
 				})
 			} else {

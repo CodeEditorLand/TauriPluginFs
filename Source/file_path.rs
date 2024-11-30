@@ -202,6 +202,7 @@ impl FromStr for FilePath {
 				return Ok(Self::Url(url));
 			}
 		}
+
 		Ok(Self::Path(PathBuf::from(s)))
 	}
 }
