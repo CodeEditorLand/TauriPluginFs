@@ -4,12 +4,12 @@
 
 use serde::de::DeserializeOwned;
 use tauri::{
-	plugin::{PluginApi, PluginHandle},
 	AppHandle,
 	Runtime,
+	plugin::{PluginApi, PluginHandle},
 };
 
-use crate::{models::*, FilePath, OpenOptions};
+use crate::{FilePath, OpenOptions, models::*};
 
 #[cfg(target_os = "android")]
 const PLUGIN_IDENTIFIER:&str = "com.plugin.fs";
